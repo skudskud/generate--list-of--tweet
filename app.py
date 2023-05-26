@@ -21,10 +21,10 @@ def generate_tweet(tool):
     logging.debug('Generating tweet for tool: %s', tool['Tool'])
     try:
         chat = openai.ChatCompletion.create(
-          model="gpt-3.5-turbo",
-          messages=[
-                {"role": "system", "content": "You are a Twitter copywriter expert in writing Twitter threads."},
-                {"role": "user", "content": f"Generate a brief description for an AI tool named {tool['Tool']}, which has the following description: {tool['Short description']}. It costs {tool['Pricing']}. Here is the link: {tool['Url without ref']}"},
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are expert in writing tweets of 35 words talking about the new tools you’ve curated this week. Keep an formal and simple tone of voice and NEVER use hashtags and emojis."},
+                {"role": "user", "content": f"New tool'name is {tool['Tool']}. Description is {tool['Long_description']}. Price is {tool['Pricing']}. Link is {tool['Url']}"},
             ]
         )
     except Exception as e:
@@ -38,6 +38,7 @@ def generate_tweet(tool):
 def home():
     return render_template('index.html')
 
+
 @app.route('/generate', methods=['GET'])
 def generate():
     # Connect to the SQLite database
@@ -46,15 +47,15 @@ def generate():
 
     # Fetch tools from the database based on the selected category
     category = request.args.get('category', '')
-    c.execute("SELECT * FROM Tools WHERE `Category 2` = ?", (category,))
+    c.execute("SELECT * FROM ToolList WHERE `Category1` = ?", (category,))
     tools = [dict(zip([column[0] for column in c.description], row)) for row in c.fetchall()]
 
-    # Randomly select 7 tools
-    selected_tools = random.sample(tools, min(7, len(tools)))
+    # Randomly select 3 tools
+    selected_tools = random.sample(tools, min(3, len(tools)))
 
     # Generate the tweets
     tweets = []
-    tweets.append(f"Here are {len(selected_tools)} cool AI tools in the {category} you should check out today:")
+    tweets.append(f"Check out those new {len(selected_tools)} AI {category} tools I've found this week:")
     for tool in selected_tools:
         tweet = generate_tweet(tool)
         tweets.append(tweet)
