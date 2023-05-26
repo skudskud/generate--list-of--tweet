@@ -54,7 +54,7 @@ def generate():
 
     # Generate the tweets
     tweets = []
-    tweets.append(f"Here are {len(selected_tools)} cool AI tools in the {category} category you should check out today:")
+    tweets.append(f"Here are {len(selected_tools)} cool AI tools in the {category} you should check out today:")
     for tool in selected_tools:
         tweet = generate_tweet(tool)
         tweets.append(tweet)
